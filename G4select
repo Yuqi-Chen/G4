@@ -1,0 +1,34 @@
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Quadron hg19_chr19.fa 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Quadron_hg19_chr19.R 
+################################################################################
+# Requires the libraries "doMC", "foreach", "itertools", "xgboost" (0.4-4),    #
+# "caret" and "plyr".                                                          #
+# If not already installed in R, you can install those by typing:              #
+# install.packages(c("doMC", "foreach", "itertools", "plyr", "caret"))         #
+# Specific steps are needed to install the xgboost version 0.4-4, as detailed  #
+# in the Readme file.                                                          #
+# The default fastread==TRUE option in readfasta requires "data.table" library.#
+################################################################################
+#setwd("./lib")
+#source("bitcompile.R")
+#rm(list=ls())
+#setwd("..")
+
+print("NOTE: Loading Quadron core...", quote=FALSE)
+load("Quadron.lib")
+
+Quadron(FastaFile= "/scratcha/sblab/chen03/ref/grch37_chr19/Homo_sapiens.GRCh37.dna.chromosome.19.fa", 
+        OutFile  = "/scratcha/sblab/chen03/g4selection/hg19_chr19.quadron.bed",
+        nCPU     = 4,
+        SeqPartitionBy = 1000000)
+
+#file.remove("Quadron.lib")
+#rm(list=ls())
+################################################################################
+
+[chen03@clust1-headnode Quadron]$ sbatch --mem 16G -o quadron.out -e quadron.err -J quadron_test --wrap "/Users/chen03/sw/R/R-3.5.2/bin/R CMD BATCH Quadron_hg19_chr19.R"
+
+
