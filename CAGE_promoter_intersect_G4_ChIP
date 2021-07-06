@@ -1,0 +1,38 @@
+[chen03@clust1-headnode bed]$ bedtools intersect -wa -a /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.6of9.bed -b promoters.sorted.bed | bedtools sort | uniq | wc -l
+4592
+[chen03@clust1-headnode bed]$ bedtools intersect -wa -a /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.7of9.bed -b promoters.sorted.bed | bedtools sort | uniq | wc -l
+3629
+[chen03@clust1-headnode bed]$ bedtools intersect -wa -a /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.8of9.bed -b promoters.sorted.bed | bedtools sort | uniq | wc -l
+2662
+[chen03@clust1-headnode bed]$ bedtools intersect -wa -a /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.9of9.bed -b promoters.sorted.bed | bedtools sort | uniq | wc -l
+1667
+
+
+[chen03@clust1-headnode bed]$ wc -l /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/*
+wc: /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/BG4_vs_DHS: Is a directory
+       0 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/BG4_vs_DHS
+wc: /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/BG4_vs_OQS: Is a directory
+       0 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/BG4_vs_OQS
+  253423 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_G4ChIP_rep1-3_multintersect.bed
+   66501 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.1of9.bed
+   28387 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.2of9.bed
+   18471 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.3of9.bed
+   13791 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.4of9.bed
+   10922 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.5of9.bed
+    8805 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.6of9.bed
+    4059 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.6of9_OQS_Stranded.bed
+    7019 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.7of9.bed
+    5285 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.8of9.bed
+    3606 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.9of9.bed
+      14 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/pw.log
+  420283 total
+
+
+> 4592/8805
+[1] 0.5215219
+> 3629/7019
+[1] 0.5170252
+> 2662/5285
+[1] 0.5036897
+> 1667/3606
+[1] 0.4622851
