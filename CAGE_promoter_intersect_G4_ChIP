@@ -27,7 +27,7 @@ wc: /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analy
       14 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/pw.log
   420283 total
 
-
+#the percentage of G4-peaks in CAGE-promoter 
 > 4592/8805
 [1] 0.5215219
 > 3629/7019
