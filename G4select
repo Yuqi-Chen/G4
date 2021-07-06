@@ -32,3 +32,31 @@ Quadron(FastaFile= "/scratcha/sblab/chen03/ref/grch37_chr19/Homo_sapiens.GRCh37.
 [chen03@clust1-headnode Quadron]$ sbatch --mem 16G -o quadron.out -e quadron.err -J quadron_test --wrap "/Users/chen03/sw/R/R-3.5.2/bin/R CMD BATCH Quadron_hg19_chr19.R"
 
 
+
+
+#Merge.py
+
+#!/usr/bin/env python
+
+import re
+
+QuadronBed = open('hg19chr19.quadron.bed', 'w+')
+
+QuadronOutput = open('hg19_chr19.quadron.bed', 'rt')
+for line in QuadronOutput:
+    array = re.compile("[ ]+").split(line.strip())
+    if array[0] == 'DATA:':
+        position, strand, length, score, motif = array[1], array[2], array[3], array[4], array[5]
+        start = str(int(position)-1)
+        end = str(int(start)+int(length))
+        QuadronBed.write('chr19'+'\t'+str(start)+'\t'+str(end)+'\t'+motif+'\t'+length+'\t'+strand+'\t'+score+'\n')
+
+
+python Merge.py
+
+#output: hg19chr19.quadron.bed
+
+
+
+
+
