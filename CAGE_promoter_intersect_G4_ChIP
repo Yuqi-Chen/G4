@@ -26,6 +26,18 @@ wc: /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analy
     3606 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/HepG2_async_rep1-3.mult.9of9.bed
       14 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analysis/confidence_peaks/pw.log
   420283 total
+  
+  
+  [chen03@clust1-headnode Quadruplex]$ wc -l *
+   19249 20180108_K562_async_rep1-3.mult.2of8.bed
+    9205 20180108_K562_async_rep1-3.mult.5of8.bed
+
+
+[chen03@clust1-headnode bed]$ bedtools intersect -wa -a /scratchb/sblab/spiege01/ENCODE_K562/reference_data/Quadruplex/20180108_K562_async_rep1-3.mult.5of8.bed -b promoters.sorted.bed | bedtools sort | uniq | wc -l
+6267
+[chen03@clust1-headnode bed]$ bedtools intersect -wa -a /scratchb/sblab/spiege01/ENCODE_K562/reference_data/Quadruplex/20180108_K562_async_rep1-3.mult.2of8.bed -b promoters.sorted.bed | bedtools sort | uniq | wc -l
+10135
+
 
 #the percentage of G4-peaks in CAGE-promoter 
 > 4592/8805
@@ -36,3 +48,7 @@ wc: /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/analy
 [1] 0.5036897
 > 1667/3606
 [1] 0.4622851
+> 6267/9205
+[1] 0.6808256
+> 10135/19249
+[1] 0.5265209
