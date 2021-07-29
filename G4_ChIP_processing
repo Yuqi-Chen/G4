@@ -1,0 +1,44 @@
+################################
+#####   demultiplex data   #####
+################################
+
+sbatch -o %j.tmp.out -e %j.tmp.err --mem 16000 --wrap "/Users/hui01/sw/demultiplexer.rhel/demuxFQ -c -d -i -e -l 9 -R -t 1 -o ./fastq -b ./fastq/SLX-20740.lostreads.r_1.2ed.fq.gz -s ./SLX-20740.demultiplexsummary_r1.2ed.txt ./SLX_20740_demuxFQ_r1.2ed.txt SLX-20740.UnspecifiedIndex.HFYK5BGXJ.s_1.r_1.fq.gz"
+
+#############################################
+#####   adaptor trimming (single-end)   #####
+#############################################
+
+for f in *.fq.gz; do sbatch --mem 16G -o ${f%%.r1.fq.gz}.cutadapt.out -e ${f%%.r1.fq.gz}.cutadapt.err --wrap "cutadapt -m 10 -q 20 -a AGATCGGAAGAGC -o ${f%%.r1.fq.gz}.trimmed.fq.gz $f"; done
+
+=== Summary ===
+keth_beadson_rep1.r1.fq.gz：
+Total reads processed:              24,173,785
+Reads with adapters:                 1,724,734 (7.1%)
+Reads that were too short:             471,191 (1.9%)
+Reads written (passing filters):    23,702,594 (98.1%)
+
+Total basepairs processed: 1,813,033,875 bp
+Quality-trimmed:              14,462,621 bp (0.8%)
+Total written (filtered):  1,756,698,565 bp (96.9%)
+
+keth_beadson_rep1.r2.fq.gz：
+Total reads processed:              22,357,624
+Reads with adapters:                 2,318,512 (10.4%)
+Reads that were too short:           1,172,141 (5.2%)
+Reads written (passing filters):    21,185,483 (94.8%)
+
+Total basepairs processed: 1,676,821,800 bp
+Quality-trimmed:              12,969,950 bp (0.8%)
+Total written (filtered):  1,569,331,243 bp (93.6%)
+
+#############################################
+#####         Bowtie2 alignment         #####
+#############################################
+
+for f in *.trimmed.fq.gz; do sbatch -o ${f%%.trimmed.fq.gz}.out -e ${f%%.trimmed.fq.gz}.err --mem 16000 -J bowtie2 --wrap "bowtie2 --end-to-end -x /scratcha/sblab/martin03/reference_data/genomes/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/Bowtie2Index/genome -U $f -S ./align/${f%%.trimmed.fq.gz}.hg19.sam --no-unal"; done
+
+
+
+
+
+
