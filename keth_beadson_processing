@@ -1,6 +1,6 @@
-################################
-#####   demultiplex data   #####
-################################
+#############################################
+#####          demultiplex data         #####
+#############################################
 
 sbatch -o %j.tmp.out -e %j.tmp.err --mem 16000 --wrap "/Users/hui01/sw/demultiplexer.rhel/demuxFQ -c -d -i -e -l 9 -R -t 1 -o ./fastq -b ./fastq/SLX-20740.lostreads.r_1.2ed.fq.gz -s ./SLX-20740.demultiplexsummary_r1.2ed.txt ./SLX_20740_demuxFQ_r1.2ed.txt SLX-20740.UnspecifiedIndex.HFYK5BGXJ.s_1.r_1.fq.gz"
 
@@ -36,6 +36,109 @@ Total written (filtered):  1,569,331,243 bp (93.6%)
 #############################################
 
 for f in *.trimmed.fq.gz; do sbatch -o ${f%%.trimmed.fq.gz}.out -e ${f%%.trimmed.fq.gz}.err --mem 16000 -J bowtie2 --wrap "bowtie2 --end-to-end -x /scratcha/sblab/martin03/reference_data/genomes/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/Bowtie2Index/genome -U $f -S ./align/${f%%.trimmed.fq.gz}.hg19.sam --no-unal"; done
+
+#############################################
+#####      samtools view & sort         #####
+#############################################
+
+for f in *.hg19.sam; do sbatch -o ${f%%.sam}.out -e ${f%%.sam}.err --mem 16000 --wrap "samtools view -S -u -F2304 -q 10 $f | samtools sort -@ 8 - > ${f%%.sam}.sort.bam";done
+
+#############################################
+#####   picard removes duplicate        #####
+#############################################
+
+for f in *.hg19.sort.bam; do sbatch -o ${f%%.sort.bam}.out -e ${f%%.sort.bam}.err --mem 16000  --wrap "java -Xmx7g -jar /home/bioinformatics/software/picard/picard-2.14.0/picard.jar MarkDuplicates INPUT=$f OUTPUT=${f%%.bam}.markduplicates.bam REMOVE_DUPLICATES=true  AS=true METRICS_FILE=${f%%.bam}.markduplicates_metrics.txt";done
+
+
+#############################################
+#####   samtools index rmdup bam        #####
+#############################################
+
+for f in *.sort.markduplicates.bam; do sbatch -o %j.out.log --mem 16G --wrap "samtools index $f"; done
+
+#############################################
+#####        generate stats             #####
+#############################################
+
+for f in *sort.bam; do bam_hg19=$f; bam_hg19_nodup=${f%%.bam}.markduplicates.bam; ls -lth $bam; echo "====="; ls -lth $bam_hg19_nodup; sbatch -o %j.out.stat --mem 8G --wrap "samtools view -c -F 260 $bam_hg19 > ${f%%.bam}.stat2
+"; sbatch -o %j.out.stat --mem 8G --wrap "samtools view -c -F 260 $bam_hg19_nodup > ${f%%.bam}.stat5"; done
+
+#############################################
+##### prepare bigwig by bamCoverage     #####
+#############################################
+
+mkdir bw
+
+for f in *.sort.markduplicates.bam; do sbatch -o ${f%%.sort.markduplicates.bam}.out -e ${f%%.sort.markduplicates.bam}.err --mem 16000  --wrap "/Users/hui01/sw/miniconda3/bin/bamCoverage --normalizeUsing CPM -bs 10 -b $f -of "bigwig" -o ./bw/${f%%.bam}.cpm.bw"; done
+
+
+##############################################################
+#####    Plot KAS-seq signal distribution around TSS     #####
+##############################################################
+
+cd /scratcha/sblab/chen03/keth_ssDNA_seq/keth_beadson_neblibprep/align/bw
+
+mkdir computeMatrix
+
+sbatch -o ./computeMatrix/computeMatrix.out -e ./computeMatrix/computeMatrix.err --mem 16000 \
+--wrap "computeMatrix reference-point \
+--referencePoint center \
+-b 1000 -a 1000 \
+-S \
+keth_beadson_rep1.hg19.sort.markduplicates.cpm.bw \
+keth_beadson_rep2.hg19.sort.markduplicates.cpm.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+--skipZeros \
+-o ./computeMatrix/KAS_around_TSS.mat.gz && 
+plotProfile -m ./computeMatrix/KAS_around_TSS.mat.gz \
+-out ./computeMatrix/KAS_around_TSS.pdf \
+--refPointLabel PeakCenter \
+--regionsLabel ENCODE_TSS
+--dpi 300 \
+--plotHeight 10 \
+--plotWidth 20 \
+--perGroup \
+--numPlotsPerRow 1" 
+
+
+
+##############################################################
+#####    Plot G4-seq signal distribution around TSS     #####
+##############################################################
+
+cd /scratcha/sblab/chen03/keth_ssDNA_seq/colm_slivia_g4_chip/align/bw
+
+mkdir computeMatrix
+
+sbatch -o ./computeMatrix/computeMatrix.out -e ./computeMatrix/computeMatrix.err --mem 16000 \
+--wrap "computeMatrix reference-point \
+--referencePoint center \
+-b 1000 -a 1000 \
+-S \
+colm_g4_chip_ssDNA_input.hg19.sort.markduplicates.cpm.bw \
+colm_g4_chip_ssDNA_rep1.hg19.sort.markduplicates.cpm.bw \
+colm_g4_chip_ssDNA_rep2.hg19.sort.markduplicates.cpm.bw \
+colm_g4_chip_standard_lib.hg19.sort.markduplicates.cpm.bw \
+silvia_g4_chip_rep1_standard_lib.hg19.sort.markduplicates.cpm.bw \
+silvia_g4_chip_ssDNA_repA.hg19.sort.markduplicates.cpm.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+--skipZeros \
+-o ./computeMatrix/G4_around_TSS.mat.gz && 
+plotProfile -m ./computeMatrix/G4_around_TSS.mat.gz \
+-out ./computeMatrix/G4_around_TSS.pdf \
+--refPointLabel PeakCenter \
+--regionsLabel ENCODE_TSS
+--dpi 300 \
+--plotHeight 10 \
+--plotWidth 20 \
+--perGroup \
+--numPlotsPerRow 1" 
+
+
+
+
 
 
 
