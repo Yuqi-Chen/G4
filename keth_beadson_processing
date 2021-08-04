@@ -168,6 +168,33 @@ plotProfile -m ./computeMatrix/${f%%bw}KAS_around_PQS.mat.gz \
 done
 
 
+cd /scratcha/sblab/chen03/keth_ssDNA_seq/keth_swift_ssDNA_lib/align/bw
+
+mkdir computeMatrix
+
+for f in keth*; do \
+sbatch -o ./computeMatrix/${f%%bw}computeMatrix.out -e ./computeMatrix/${f%%bw}computeMatrix.err --mem 16000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-S \
+$f \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/PQS_G3+L1–7_hg19.bed \
+--skipZeros \
+-o ./computeMatrix/${f%%bw}KAS_around_PQS.mat.gz && 
+plotProfile -m ./computeMatrix/${f%%bw}KAS_around_PQS.mat.gz \
+-out ./computeMatrix/${f%%bw}KAS_around_PQS.pdf \
+--refPointLabel PQS \
+--regionsLabel KAS
+--dpi 300 \
+--plotHeight 10 \
+--plotWidth 20 \
+--perGroup \
+--numPlotsPerRow 1"; \
+done
+
+
 ####################################################################
 #####    Plot G4-seq signal distribution around PQS G3+L1-7    #####
 ####################################################################
