@@ -145,26 +145,27 @@ cd /scratcha/sblab/chen03/keth_ssDNA_seq/keth_beadson_neblibprep/align/bw
 
 mkdir computeMatrix
 
-sbatch -o ./computeMatrix/computeMatrix.out -e ./computeMatrix/computeMatrix.err --mem 16000 \
+for f in keth_beadson_rep*; do \
+sbatch -o ./computeMatrix/${f%%bw}computeMatrix.out -e ./computeMatrix/${f%%bw}computeMatrix.err --mem 16000 \
 --wrap "computeMatrix reference-point \
 --referencePoint TSS \
 -b 1000 -a 1000 \
 -S \
-keth_beadson_rep1.hg19.sort.markduplicates.cpm.bw \
-keth_beadson_rep2.hg19.sort.markduplicates.cpm.bw \
+$f \
 -R \
 /scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/PQS_G3+L1–7_hg19.bed \
 --skipZeros \
--o ./computeMatrix/KAS_around_PQS.mat.gz && 
-plotProfile -m ./computeMatrix/KAS_around_PQS.mat.gz \
--out ./computeMatrix/KAS_around_PQS.pdf \
---refPointLabel TSS \
---regionsLabel PQS
+-o ./computeMatrix/${f%%bw}KAS_around_PQS.mat.gz && 
+plotProfile -m ./computeMatrix/${f%%bw}KAS_around_PQS.mat.gz \
+-out ./computeMatrix/${f%%bw}KAS_around_PQS.pdf \
+--refPointLabel PQS \
+--regionsLabel KAS
 --dpi 300 \
 --plotHeight 10 \
 --plotWidth 20 \
 --perGroup \
---numPlotsPerRow 1" 
+--numPlotsPerRow 1"; \
+done
 
 
 ####################################################################
@@ -175,31 +176,32 @@ cd /scratcha/sblab/chen03/keth_ssDNA_seq/colm_slivia_g4_chip/align/bw
 
 mkdir computeMatrix
 
-sbatch -o ./computeMatrix/computeMatrix.out -e ./computeMatrix/computeMatrix.err --mem 16000 \
+for f in *hg19.sort.markduplicates.cpm.bw; do \
+sbatch -o ./computeMatrix/${f%%bw}computeMatrix.out -e ./computeMatrix/${f%%bw}computeMatrix.err --mem 16000 \
 --wrap "computeMatrix reference-point \
 --referencePoint TSS \
 -b 1000 -a 1000 \
 -S \
-colm_g4_chip_ssDNA_rep1.hg19.sort.markduplicates.cpm.bw \
-colm_g4_chip_ssDNA_rep2.hg19.sort.markduplicates.cpm.bw \
-colm_g4_chip_standard_lib.hg19.sort.markduplicates.cpm.bw \
-silvia_g4_chip_rep1_standard_lib.hg19.sort.markduplicates.cpm.bw \
-silvia_g4_chip_ssDNA_repA.hg19.sort.markduplicates.cpm.bw \
+$f \
 -R \
 /scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/PQS_G3+L1–7_hg19.bed \
 --skipZeros \
--o ./computeMatrix/G4_around_PQS.mat.gz && 
-plotProfile -m ./computeMatrix/G4_around_PQS.mat.gz \
--out ./computeMatrix/G4_around_PQS.pdf \
---refPointLabel TSS \
---regionsLabel PQS
+-o ./computeMatrix/${f%%bw}G4_around_PQS.mat.gz && 
+plotProfile -m ./computeMatrix/${f%%bw}G4_around_PQS.mat.gz \
+-out ./computeMatrix/${f%%bw}G4_around_PQS.pdf \
+--refPointLabel PQS \
+--regionsLabel G4
 --dpi 300 \
 --plotHeight 10 \
 --plotWidth 20 \
 --perGroup \
---numPlotsPerRow 1" 
+--numPlotsPerRow 1"; \
+done
 
 
+####################################################################
+#####    plot the G4P peak distribution around PQS G3+L1-7     #####
+####################################################################
 
 
 cd /scratcha/sblab/chen03/G4P/bw
@@ -219,8 +221,8 @@ $f \
 -o ./computeMatrix/${f%%bigWig}G4_around_PQS.mat.gz && 
 plotProfile -m ./computeMatrix/${f%%bigWig}G4_around_PQS.mat.gz \
 -out ./computeMatrix/${f%%bigWig}G4_around_PQS.pdf \
---refPointLabel TSS \
---regionsLabel PQS
+--refPointLabel PQS \
+--regionsLabel G4P
 --dpi 300 \
 --plotHeight 10 \
 --plotWidth 20 \
