@@ -351,4 +351,34 @@ done
 
 
 
+####################################################################
+#####    plot the wuda_KAS_seq peak distribution around PQS G3+L1-7     
+####################################################################
+
+
+cd /scratcha/sblab/chen03/wuda_G4_CnT/bw
+
+mkdir computeMatrix
+
+for f in *KAS-seq*bw; do \
+sbatch -o ./computeMatrix/${f%%bw}computeMatrix.out -e ./computeMatrix/${f%%bw}computeMatrix.err --mem 32000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 3000 -a 3000 \
+-S \
+$f \
+-R \
+/Users/hui01/ref/PQS/PQS_G3+L1–7_hg38.bed \
+--skipZeros \
+-o ./computeMatrix/${f%%bw}KAS_around_PQS.mat.gz && 
+plotProfile -m ./computeMatrix/${f%%bw}KAS_around_PQS.mat.gz \
+-out ./computeMatrix/${f%%bw}KAS_around_PQS.pdf \
+--refPointLabel PQS \
+--regionsLabel KAS
+--dpi 300 \
+--plotHeight 10 \
+--plotWidth 60 \
+--perGroup \
+--numPlotsPerRow 1"; \
+done
 
