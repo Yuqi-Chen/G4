@@ -368,7 +368,7 @@ sbatch -o ./computeMatrix/${f%%bw}computeMatrix.out -e ./computeMatrix/${f%%bw}c
 -S \
 $f \
 -R \
-/Users/hui01/ref/PQS/PQS_G3+L1–7_hg38.bed \
+/Users/hui01/ref/PQS/G3+L1–7_hg38.split.cleaned.bed \
 --skipZeros \
 -o ./computeMatrix/${f%%bw}KAS_around_PQS.mat.gz && 
 plotProfile -m ./computeMatrix/${f%%bw}KAS_around_PQS.mat.gz \
