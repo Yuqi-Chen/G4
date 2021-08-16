@@ -207,14 +207,46 @@ sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./co
 plotHeatmap \
 --sortUsingSamples 1 \
 --samplesLabel G4_rep1 PolII_rep1 PolII_rep2 CAGE_rep1 CAGE_rep2 \
---matrixFile /computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PolII_CAGE.aroundTSS.K562.mat.gz \
---outFileName /computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PolII_CAGE.aroundTSS.K562.2kb.sorted_by_G4rep1.pdf"
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PolII_CAGE.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PolII_CAGE.aroundTSS.K562.2kb.sorted_by_G4rep1.pdf"
+
+
+
+
+##############################################################
+#####    bigwigCompare to scale bigwig files   
+##############################################################
+
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o bigwigCompare.out -e bigwigCompare.err --mem 64000 \
+--wrap "bigwigCompare --binSize 10 \
+--outFileName /scratcha/sblab/chen03/K562_CAGE_fantom5/bw/K562.CAGE.CNhs11250.10454-106G4.hg38.nobarcode.RPKM.scalefactor100.bw \
+--outFileFormat bigwig \
+--bigwig1 /scratcha/sblab/chen03/K562_CAGE_fantom5/bw/K562.CAGE.CNhs11250.10454-106G4.hg38.nobarcode.RPKM.bw \
+--bigwig2 /scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+--scaleFactors 0.01:1 \
+--skipNonCoveredRegions"
 
 
 
 
 
-
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-S \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+/scratcha/sblab/chen03/K562_CAGE_fantom5/bw/K562.CAGE.CNhs11250.10454-106G4.hg38.nobarcode.RPKM.scalefactor100.bw \
+-R \
+/scratcha/sblab/martin03/reference_data/genomes/gencode/Gencode_human/release_28/gtf/gencode.v28.annotation.gtf \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_CAGE.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 CAGE_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_CAGE.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_CAGE.aroundTSS.K562.sorted_by_G4rep1.pdf"
 
 
 
