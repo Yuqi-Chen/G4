@@ -69,7 +69,7 @@ for f in *sort.bam; do bam_hg19=$f; bam_hg19_nodup=${f%%.bam}.markduplicates.bam
 
 mkdir bw
 
-for f in *.sort.markduplicates.bam; do sbatch -o ${f%%.sort.markduplicates.bam}.out -e ${f%%.sort.markduplicates.bam}.err --mem 16000  --wrap "/Users/hui01/sw/miniconda3/bin/bamCoverage --normalizeUsing CPM -bs 10 -b $f -of "bigwig" -o ./bw/${f%%.bam}.cpm.bw"; done
+for f in *.sort.markduplicates.bam; do sbatch -o ${f%%.sort.markduplicates.bam}.out -e ${f%%.sort.markduplicates.bam}.err --mem 16000  --wrap "/Users/hui01/sw/miniconda3/bin/bamCoverage --normalizeUsing RPKM -bs 10 -b $f -of "bigwig" -o ./bw/${f%%.bam}.RPKM.bw"; done
 
 
 ##############################################################
@@ -521,16 +521,16 @@ mkdir computeMatrix_GTFandG4aroundTSSinK562_hg19
 sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 32000 \
 --wrap "computeMatrix reference-point \
 --referencePoint TSS \
--b 200 -a 200 \
+-b 1000 -a 1000 \
 -S \
 /scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/G4_bio2_a.bs50.bl.RPKM.bw \
 /scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/G4_bio2_b.bs50.bl.RPKM.bw \
 /scratcha/sblab/chen03/encode/bigwig/TBP_K562.ENCFF177SSB.hg19.RPKM.bw \
-/scratcha/sblab/chen03/encode/bigwig/GTF2A2_K562.ENCFF780UAV.hg19.bw \
-/scratcha/sblab/chen03/mitosis/bw_TFIIB/*Asynchronous_TFIIB_1.bw \
+#/scratcha/sblab/chen03/encode/bigwig/GTF2A2_K562.ENCFF780UAV.hg19.bw \
+#/scratcha/sblab/chen03/mitosis/bw_TFIIB/*Asynchronous_TFIIB_1.bw \
 -R \
 /scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
---skipZeros \
+#--skipZeros \
 -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/GTFandG4aroundTSSinK562.mat.gz && 
 plotProfile -m ./computeMatrix_GTFandG4aroundTSSinK562_hg19/GTFandG4aroundTSSinK562.mat.gz \
 -out ./computeMatrix_GTFandG4aroundTSSinK562_hg19/GTFandG4aroundTSSinK562.pdf \
@@ -566,6 +566,8 @@ cd /scratcha/sblab/chen03/computeMatrix/computeMatrix_GTFandG4aroundTSSinK562_hg
 
 sbatch -o plotHeatmap.out -e plotHeatmap.err --mem 32000 \
 --wrap " \
-plotHeatmap --sortUsingSamples 1 --matrixFile TBPandG4aroundTSSinK562.mat.gz --outFileName TBPandG4aroundTSSinK562_heatmap_sorted_by_G4rep1.pdf"
+plotHeatmap \
+--sortUsingSamples 1 \
+--matrixFile GTFandG4aroundTSSinK562.mat.gz --outFileName TBPandG4aroundTSSinK562_1kb_sorted_by_G4rep1.pdf"
 
 
