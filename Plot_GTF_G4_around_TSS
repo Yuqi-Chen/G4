@@ -468,34 +468,77 @@ sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./co
 --missingDataAsZero \
 --skipZeros \
 -S \
-/scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/G4_bio2_a.bs50.bl.RPKM.bw \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg19.sort.w10.rpm.bw \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_a_701_517.rmdup.clean.bs10.bl.RPKM.bw \
 /scratcha/sblab/chen03/OQS/bw/GSE63874_Na_K_12_plus.bw \
+/scratcha/sblab/chen03/OQS/bw/GSE63874_Na_K_12_minus.bw \
+/scratcha/sblab/chen03/OQS/bw/GSE63874_Na_PDS_12_plus.bw \
+/scratcha/sblab/chen03/OQS/bw/GSE63874_Na_PDS_12_minus.bw \
 -R \
 /scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
 -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz &&
 plotHeatmap \
 --sortUsingSamples 1 \
---samplesLabel G4_rep1 OQS_K_plus \
+--samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
 --matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
 --outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_G4rep1.pdf &&
 plotHeatmap \
 --sortUsingSamples 2 \
---samplesLabel G4_rep1 OQS_K_plus \
+--samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
 --matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
---outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_K_plus.pdf
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_G4rep2.pdf &&
+plotHeatmap \
+--sortUsingSamples 3 \
+--samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_K_plus.pdf &&
+plotHeatmap \
+--sortUsingSamples 4 \
+--samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_K_minus.pdf &&
+plotHeatmap \
+--sortUsingSamples 5 \
+--samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_PDS_plus.pdf &&
+plotHeatmap \
+--sortUsingSamples 6 \
+--samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_PDS_minus.pdf
 "
 
 
 
+########################################################
+#### installation and usage CrossMap
+########################################################
+
+pip install --user CrossMap
+
+Usage: CrossMap.py <command> [options]
 
 
+########################################################
+#### convert K562_G4_ChIP_bw from hg38 to hg19
+########################################################
+cd /scratcha/sblab/chen03/K562_G4_ChIP/bw/
 
+sbatch -J crossmap -o ./CrossMap.out -e ./CrossMap.err --mem 64000 \
+--wrap " \
+CrossMap.py bigwig /Users/chen03/sw/CrossMap_Chain.file/hg38ToHg19.over.chain.gz \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg19.sort.w10.rpm"
 
+########################################################
+#### merge K562_G4_ChIP （hg38) bams 
+########################################################
 
-
-
-
-
+java -Xmx7g -jar /home/bioinformatics/software/picard/picard-2.14.0/picard.jar MergeSamFiles \
+I=input_1.bam \
+I=input_2.bam \
+O=output_merged_files.bam
 
 
 
