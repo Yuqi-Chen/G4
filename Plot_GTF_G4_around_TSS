@@ -214,7 +214,7 @@ plotHeatmap \
 
 
 ##############################################################
-#####    bigwigCompare to scale bigwig files   
+#####    bigwigCompare to scale CAGE bigwig files   
 ##############################################################
 
 cd /scratcha/sblab/chen03/computeMatrix
@@ -228,25 +228,272 @@ sbatch -o bigwigCompare.out -e bigwigCompare.err --mem 64000 \
 --scaleFactors 0.01:1 \
 --skipNonCoveredRegions"
 
+############################################################################################################################
 
+####    bigwigCompare to scale PolII bigwig files 
 
+cd /scratcha/sblab/chen03/computeMatrix
 
+sbatch -o bigwigCompare.out -e bigwigCompare.err --mem 64000 \
+--wrap "bigwigCompare --binSize 10 \
+--outFileName /scratcha/sblab/chen03/K562_CAGE_fantom5/bw/DMSO_4hr_Pol2_ChIP_biorep3_SLX-18060.D708dna_D503dna.hg38.sort.w10.rpm.scalefactor6.bw \
+--outFileFormat bigwig \
+--bigwig1 /scratcha/sblab/chen03/K562_PolII_ChIP/bw/DMSO_4hr_Pol2_ChIP_biorep3_SLX-18060.D708dna_D503dna.hg38.sort.w10.rpm.bw \
+--bigwig2 /scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+--scaleFactors 0.17:1 \
+--skipNonCoveredRegions"
+
+#####    Plot K562 G4 & PolII signal distribution around TSS 
+
+cd /scratcha/sblab/chen03/computeMatrix
 
 sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
 --wrap "computeMatrix reference-point \
 --referencePoint TSS \
 -b 1000 -a 1000 \
+-p 8 \
 -S \
 /scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+/scratcha/sblab/chen03/K562_CAGE_fantom5/bw/DMSO_4hr_Pol2_ChIP_biorep3_SLX-18060.D708dna_D503dna.hg38.sort.w10.rpm.scalefactor6.bw \
+-R \
+/scratcha/sblab/martin03/reference_data/genomes/gencode/Gencode_human/release_28/gtf/gencode.v28.annotation.gtf \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PolII.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 PolII_rep1 PolII_rep2 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PolII.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PolII.aroundTSS.K562.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 PolII_rep1 PolII_rep2 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PolII.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PolII.aroundTSS.K562.sorted_by_PolIIrep1.pdf"
+
+
+############################################################################################################################
+#####    Plot K562 G4 & ATAC signal distribution around TSS 
+############################################################################################################################
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 8 \
+-S \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+/scratcha/sblab/chen03/K562_ATAC/bw/no_garcinol_4hr_wholeK562_fragment_1hr_biorep1_ATACseq7.SLX-18056_SLX-18895.merged.sorted.w10.rpm.bw \
+-R \
+/scratcha/sblab/martin03/reference_data/genomes/gencode/Gencode_human/release_28/gtf/gencode.v28.annotation.gtf \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_ATAC.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 ATAC_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_ATAC.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_ATAC.aroundTSS.K562.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 ATAC_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_ATAC.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_ATAC.aroundTSS.K562.sorted_by_ATACrep1.pdf"
+
+
+
+
+############################################################################################################################
+#####    Plot K562 G4 & DNAse-seq signal distribution around TSS 
+############################################################################################################################
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 16 \
+-S \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+/scratcha/sblab/chen03/K562_DNase_seq/bw/K562_DNase_seq.ENCFF972GVB.hg38.bw \
+-R \
+/scratcha/sblab/martin03/reference_data/genomes/gencode/Gencode_human/release_28/gtf/gencode.v28.annotation.gtf \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_DNase.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 DNase_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_DNase.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_DNase.aroundTSS.K562.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 DNase_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_DNase.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_DNase.aroundTSS.K562.sorted_by_DNaserep1.pdf"
+
+
+
+############################################################################################################################
+#####    Plot K562 G4 & FAIRE-seq signal distribution around TSS 
+############################################################################################################################
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 16 \
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/G4_bio2_a.bs50.bl.RPKM.bw \
+/scratcha/sblab/chen03/K562_FAIRE_seq/bw/K562_FAIRE_seq.ENCFF000TLE.hg19.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_FAIRE.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 FAIRE_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_FAIRE.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_FAIRE.aroundTSS.K562.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 FAIRE_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_FAIRE.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_FAIRE.aroundTSS.K562.sorted_by_FAIRErep1.pdf
+"
+
+
+############################################################################################################################
+
+####    bigwigCompare to scale TBP bigwig files 
+
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o bigwigCompare.out -e bigwigCompare.err --mem 64000 \
+--wrap "bigwigCompare --binSize 10 \
+--outFileName /scratcha/sblab/chen03/encode/bigwig/TBP_K562.ENCFF177SSB.hg19.RPKM.scalefactor10.bw \
+--outFileFormat bigwig \
+--bigwig1 /scratcha/sblab/chen03/encode/bigwig/TBP_K562.ENCFF177SSB.hg19.RPKM.bw \
+--bigwig2 /scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/G4_bio2_a.bs50.bl.RPKM.bw \
+--scaleFactors 0.1:1 \
+--skipNonCoveredRegions"
+
+#### Plot K562 G4 TBP signal distribution around TSS 
+
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 16 \
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/G4_bio2_a.bs50.bl.RPKM.bw \
+/scratcha/sblab/chen03/encode/bigwig/TBP_K562.ENCFF177SSB.hg19.RPKM.scalefactor10.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TBP.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 TBP_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TBP.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TBP.aroundTSS.K562.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 TBP_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TBP.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TBP.aroundTSS.K562.sorted_by_TBPrep1.pdf
+"
+
+
+
+
+
+
+########################################################
+#### Plot K562 PolII-Karen CAGE-Fantom5 signal distribution around TSS (hg38)
+########################################################
+
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 8 \
+-S \
+/scratcha/sblab/chen03/K562_PolII_ChIP/bw/DMSO_4hr_Pol2_ChIP_biorep3_SLX-18060.D708dna_D503dna.hg38.sort.w10.rpm.bw \
 /scratcha/sblab/chen03/K562_CAGE_fantom5/bw/K562.CAGE.CNhs11250.10454-106G4.hg38.nobarcode.RPKM.scalefactor100.bw \
 -R \
 /scratcha/sblab/martin03/reference_data/genomes/gencode/Gencode_human/release_28/gtf/gencode.v28.annotation.gtf \
--o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_CAGE.aroundTSS.K562.mat.gz &&
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/PolII_CAGE.aroundTSS.K562.mat.gz &&
 plotHeatmap \
 --sortUsingSamples 1 \
---samplesLabel G4_rep1 CAGE_rep1 \
---matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_CAGE.aroundTSS.K562.mat.gz \
---outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_CAGE.aroundTSS.K562.sorted_by_G4rep1.pdf"
+--samplesLabel PolII_rep1 CAGE_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/PolII_CAGE.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/PolII_CAGE.aroundTSS.K562.sorted_by_PolIIrep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--colorMap Greens Greens \
+--samplesLabel PolII_rep1 CAGE_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/PolII_CAGE.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/PolII_CAGE.aroundTSS.K562.sorted_by_CAGErep1.pdf
+"
+
+
+
+
+
+
+########################################################
+#### Plot K562 G4 & OQSs signal distribution around TSS 
+########################################################
+
+#### bedGraphToBigWig
+
+for f in *bedGraph; do \
+sbatch -o bw.err -J bw --mem 16G --export=All \
+--wrap "/Users/martin03/sw/bedGraphToBigWig/v4/bedGraphToBigWig \
+/scratcha/sblab/chen03/OQS/bw/$f \
+/Users/martin03/sw/igvtools/igvtools-2.3.91/genomes/hg19.chrom.sizes \
+/scratcha/sblab/chen03/OQS/bw/${f%%bedGraph}bw"; done
+
+
+
+#### Plot K562 G4 & OQSs signal distribution around TSS
+
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-bs 10 \
+-p 16 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/G4_bio2_a.bs50.bl.RPKM.bw \
+/scratcha/sblab/chen03/OQS/bw/GSE63874_Na_K_12_plus.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 OQS_K_plus \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 OQS_K_plus \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_K_plus.pdf
+"
+
+
+
+
+
+
+
+
+
+
 
 
 
