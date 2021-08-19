@@ -51,65 +51,114 @@ done
 
 
 ##############################################################
-#####    Plot TFIIB signal distribution around TSS     
+#####    Plot TFIIB signal distribution around TSS    (hg19) 
 ##############################################################
 
-cd /scratcha/sblab/chen03/mitosis/bw_TFIIB
 
-mkdir computeMatrix_THIIBaroundTSS_hg19
+cd /scratcha/sblab/chen03/computeMatrix
 
-for f in *bw; do \
-sbatch -o ./computeMatrix_THIIBaroundTSS_hg19/${f%%bw}computeMatrix.out -e ./computeMatrix/${f%%bw}computeMatrix.err --mem 32000 \
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
 --wrap "computeMatrix reference-point \
 --referencePoint TSS \
--b 200 -a 200 \
--S \
-$f \
--R \
-/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-b 1000 -a 1000 \
+-p 16 \
+--missingDataAsZero \
 --skipZeros \
--o ./computeMatrix_THIIBaroundTSS_hg19/${f%%bw}TFIIB_around_TSS.mat.gz && 
-plotProfile -m ./computeMatrix_THIIBaroundTSS_hg19/${f%%bw}TFIIB_around_TSS.mat.gz \
--out ./computeMatrix_THIIBaroundTSS_hg19/${f%%bw}TFIIB_around_TSS.pdf \
---refPointLabel TSS \
---regionsLabel TFIIB
---dpi 300 \
---plotHeight 10 \
---plotWidth 80 \
---perGroup \
---numPlotsPerRow 1";
-done
-
-
-cd /scratcha/sblab/chen03/mitosis/bw_TFIIB
-
-mkdir computeMatrix_THIIBandG4aroundTSS_hg19
-
-sbatch -o ./computeMatrix_THIIBandG4aroundTSS_hg19/computeMatrix.out -e ./computeMatrix_THIIBandG4aroundTSS_hg19/computeMatrix.err --mem 32000 \
---wrap "computeMatrix reference-point \
---referencePoint TSS \
--b 200 -a 200 \
 -S \
-/scratcha/sblab/chen03/mitosis/bw_TFIIB/*Asynchronous_TFIIB_1.bw \
-/scratcha/sblab/chen03/mitosis/bw_TFIIB/*Asynchronous_TFIIB_2.bw \
-/scratcha/sblab/chen03/mitosis/bw_TFIIB/*Asynchronous_TFIIB_3.bw \
 /scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/bigWig/HepG2_G4ChIP_REP3_a.SLX-19356.i705_i502.bs50.bl.RPKM.bw \
-/scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/bigWig/HepG2_G4ChIP_REP3_b.SLX-19356.i706_i503.bs50.bl.RPKM.bw \
-/scratchb/sblab/spiege01/ENCODE_more_celllines/HepG2/G4-ChIP/SLX-19356/bigWig/HepG2_G4ChIP_REP3_c.SLX-19356.i706_i504.bs50.bl.RPKM.bw \
+/scratcha/sblab/chen03/mitosis/bw_TFIIB/*Asynchronous_TFIIB_2.bw \
 -R \
 /scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 TFIIB_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 TFIIB_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.sorted_by_TFIIBrep1.pdf
+"
+
+
+##############################################################
+#####    Plot TFIIB signal distribution around TSS    (hg19) 
+##############################################################
+
+
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 32 \
+--missingDataAsZero \
 --skipZeros \
--o ./computeMatrix_THIIBandG4aroundTSS_hg19/TFIIBandG4_around_TSS.mat.gz && 
-plotProfile -m ./computeMatrix_THIIBandG4aroundTSS_hg19/TFIIBandG4_around_TSS.mat.gz \
--out ./computeMatrix_THIIBandG4aroundTSS_hg19/TFIIBandG4_around_TSS.pdf \
---refPointLabel TSS \
---dpi 300 \
---plotHeight 10 \
---plotWidth 80 \
---perGroup \
---samplesLabel THIIB.rep1 THIIB.rep2 THIIB.rep3 G4.rep1 G4.rep2 G4.rep3 \
---plotTitle THIIBandG4aroundTSS_hg19  \
---numPlotsPerRow 1"
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_b_701_502.rmdup.clean.bs10.bl.RPKM.bw \
+/scratcha/sblab/chen03/encode/bigwig/GTFIIB_K562.ENCFF000YNS.hg19.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.hg19.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 TFIIB_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.sorted_by_G4rep1.hg19.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 TFIIB_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.sorted_by_TFIIBrep1.hg19.pdf
+"
+
+##############################################################
+#####    Plot TFIIB signal distribution around TSS    (hg38) 
+##############################################################
+
+
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 16 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+/scratcha/sblab/chen03/encode/bigwig/GTFIIB_K562.ENCFF517LWE.hg38.bw \
+-R \
+/scratcha/sblab/martin03/reference_data/genomes/gencode/Gencode_human/release_28/gtf/gencode.v28.annotation.gtf \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.hg38.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 TFIIB_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.hg38.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.sorted_by_G4rep1.hg38.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 TFIIB_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.hg38.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TFIIB.aroundTSS.K562.sorted_by_TFIIBrep1.hg38.pdf
+"
+
+
+
+##plotProfile -m ./computeMatrix_THIIBandG4aroundTSS_hg19/G4_TFIIB_around_TSS.mat.gz \
+##-out ./computeMatrix_THIIBandG4aroundTSS_hg19/G4_TFIIB_around_TSS.pdf \
+##--refPointLabel TSS \
+##--dpi 300 \
+##--plotHeight 10 \
+##--plotWidth 80 \
+##--perGroup \
+##--samplesLabel THIIB.rep1 THIIB.rep2 THIIB.rep3 G4.rep1 G4.rep2 G4.rep3 \
+##--plotTitle THIIBandG4aroundTSS_hg19  \
+##--numPlotsPerRow 1"
 
 
 ##############################################################
@@ -243,8 +292,9 @@ sbatch -o bigwigCompare.out -e bigwigCompare.err --mem 64000 \
 --scaleFactors 0.17:1 \
 --skipNonCoveredRegions"
 
-#####    Plot K562 G4 & PolII signal distribution around TSS 
-
+############################################################################################################################
+#####    Plot K562 G4 & PolII signal distribution around TSS  （hg38）
+############################################################################################################################
 cd /scratcha/sblab/chen03/computeMatrix
 
 sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
@@ -271,7 +321,7 @@ plotHeatmap \
 
 
 ############################################################################################################################
-#####    Plot K562 G4 & ATAC signal distribution around TSS 
+#####    Plot K562 G4 & ATAC signal distribution around TSS （hg38）
 ############################################################################################################################
 cd /scratcha/sblab/chen03/computeMatrix
 
@@ -330,7 +380,7 @@ plotHeatmap \
 
 
 ############################################################################################################################
-#####    Plot K562 G4 & FAIRE-seq signal distribution around TSS 
+#####    Plot K562 G4 & FAIRE-seq signal distribution around TSS (hg19)
 ############################################################################################################################
 cd /scratcha/sblab/chen03/computeMatrix
 
@@ -339,8 +389,10 @@ sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./co
 --referencePoint TSS \
 -b 1000 -a 1000 \
 -p 16 \
+--missingDataAsZero \
+--skipZeros \
 -S \
-/scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/G4_bio2_a.bs50.bl.RPKM.bw \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_a_701_517.rmdup.clean.bs10.bl.RPKM.bw \
 /scratcha/sblab/chen03/K562_FAIRE_seq/bw/K562_FAIRE_seq.ENCFF000TLE.hg19.bw \
 -R \
 /scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
@@ -373,7 +425,9 @@ sbatch -o bigwigCompare.out -e bigwigCompare.err --mem 64000 \
 --scaleFactors 0.1:1 \
 --skipNonCoveredRegions"
 
-#### Plot K562 G4 TBP signal distribution around TSS 
+############################################################################################################################
+#### Plot K562 G4 TBP signal distribution around TSS  (hg19)
+############################################################################################################################
 
 cd /scratcha/sblab/chen03/computeMatrix
 
@@ -382,9 +436,11 @@ sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./co
 --referencePoint TSS \
 -b 1000 -a 1000 \
 -p 16 \
+--missingDataAsZero \
+--skipZeros \
 -S \
-/scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/G4_bio2_a.bs50.bl.RPKM.bw \
-/scratcha/sblab/chen03/encode/bigwig/TBP_K562.ENCFF177SSB.hg19.RPKM.scalefactor10.bw \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_a_701_517.rmdup.clean.bs10.bl.RPKM.bw \
+/scratcha/sblab/chen03/encode/bigwig/TBP_K562.ENCFF177SSB.hg19.RPKM.bw \
 -R \
 /scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
 -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_TBP.aroundTSS.K562.mat.gz &&
@@ -437,11 +493,8 @@ plotHeatmap \
 
 
 
-
-
-
 ########################################################
-#### Plot K562 G4 & OQSs signal distribution around TSS 
+#### Plot K562 G4 & OQSs signal distribution around TSS (hg19)
 ########################################################
 
 #### bedGraphToBigWig
@@ -468,46 +521,52 @@ sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./co
 --missingDataAsZero \
 --skipZeros \
 -S \
-/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg19.sort.w10.rpm.bw \
-/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_a_701_517.rmdup.clean.bs10.bl.RPKM.bw \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_b_701_502.rmdup.clean.bs10.bl.RPKM.bw \
 /scratcha/sblab/chen03/OQS/bw/GSE63874_Na_K_12_plus.bw \
 /scratcha/sblab/chen03/OQS/bw/GSE63874_Na_K_12_minus.bw \
-/scratcha/sblab/chen03/OQS/bw/GSE63874_Na_PDS_12_plus.bw \
-/scratcha/sblab/chen03/OQS/bw/GSE63874_Na_PDS_12_minus.bw \
 -R \
 /scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
 -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz &&
 plotHeatmap \
 --sortUsingSamples 1 \
---samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
---matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
---outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_G4rep1.pdf &&
-plotHeatmap \
---sortUsingSamples 2 \
---samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
+--samplesLabel G4_rep1 OQS_K_plus OQS_K_minus \
 --matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
 --outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_G4rep2.pdf &&
 plotHeatmap \
---sortUsingSamples 3 \
---samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 OQS_K_plus OQS_K_minus \
 --matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
 --outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_K_plus.pdf &&
 plotHeatmap \
---sortUsingSamples 4 \
---samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
+--sortUsingSamples 3 \
+--samplesLabel G4_rep1 OQS_K_plus OQS_K_minus \
 --matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
---outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_K_minus.pdf &&
-plotHeatmap \
---sortUsingSamples 5 \
---samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
---matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
---outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_PDS_plus.pdf &&
-plotHeatmap \
---sortUsingSamples 6 \
---samplesLabel G4_rep1 OQS_K_plus OQS_K_minus OQS_PDS_plus OQS_PDS_minus \
---matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.mat.gz \
---outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_PDS_minus.pdf
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_OQS.aroundTSS.K562.Na_K_12_plus.sorted_by_OQS_K_minus.pdf
 "
+
+########################################################
+#### Merge OQS_plus and OQS_minus (plus the scores) 
+########################################################
+
+cd /scratcha/sblab/chen03/OQS/bw
+
+wc -l *.bedGraph
+  185176346 GSE63874_Na_K_12_minus.bedGraph
+  187126328 GSE63874_Na_K_12_plus.bedGraph
+  186102591 GSE63874_Na_PDS_12_minus.bedGraph
+  188012783 GSE63874_Na_PDS_12_plus.bedGraph
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -542,3 +601,172 @@ O=output_merged_files.bam
 
 
 
+
+##############################################################
+#####    Plot G4 $ SP1 signal distribution around TSS    (hg19) 
+##############################################################
+
+
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 32 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+#/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_a*.rmdup.clean.bs10.bl.RPKM.bw \
+#/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_b*.rmdup.clean.bs10.bl.RPKM.bw \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_c*.rmdup.clean.bs10.bl.RPKM.bw \
+#/scratcha/sblab/chen03/encode/bigwig/SP1_K562.ENCFF564UBH.hg19.bw \
+/scratcha/sblab/chen03/encode/bigwig/SP1_K562.ENCFF327JLU.hg19.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SP1.aroundTSS.K562.hg19.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 SP1_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SP1.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SP1.aroundTSS.K562.sorted_by_G4rep1.hg19.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 SP1_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SP1.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SP1.aroundTSS.K562.sorted_by_SP1rep1.hg19.pdf
+"
+
+##############################################################
+#####    Plot G4 $ RNA_Seq signal distribution around TSS    (hg19) 
+##############################################################
+
+
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 32 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_a*.rmdup.clean.bs10.bl.RPKM.bw \
+/scratcha/sblab/chen03/encode/bigwig/polyA_plus_RNA_seq.plus_strand.ENCFF039CTL.hg19.bw \
+/scratcha/sblab/chen03/encode/bigwig/polyA_plus_RNA_seq.minus_strand.ENCFF960DJT.hg19.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_RNAseq.aroundTSS.K562.hg19.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 RNAseq_plus_strand RNAseq_minus_strand \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_RNAseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_RNAseq.aroundTSS.K562.sorted_by_G4rep1.hg19.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 RNAseq_plus_strand RNAseq_minus_strand \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_RNAseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_RNAseq.aroundTSS.K562.sorted_by_RNAseq_plustrand.hg19.pdf &&
+plotHeatmap \
+--sortUsingSamples 3 \
+--samplesLabel G4_rep1 RNAseq_plus_strand RNAseq_minus_strand \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_RNAseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_RNAseq.aroundTSS.K562.sorted_by_RNAseq_minustrand.hg19.pdf
+"
+
+
+
+############################################################################################################################
+#####    Plot K562 G4 & SIRT6 signal (transcription pausing) distribution around TSS （hg38）
+############################################################################################################################
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 32 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+/scratcha/sblab/chen03/encode/bigwig/SIRT6_K562.ENCFF405BIE.hg38.bw \
+-R \
+/scratcha/sblab/martin03/reference_data/genomes/gencode/Gencode_human/release_28/gtf/gencode.v28.annotation.gtf \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 SIRT6_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 SIRT6_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.sorted_by_SIRT6rep1.pdf"
+
+
+
+
+############################################################################################################################
+#####    Plot K562 G4 & SIRT6 signal (transcription pausing) distribution around TSS （hg19）
+############################################################################################################################
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 32 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_a*.rmdup.clean.bs10.bl.RPKM.bw \
+/scratcha/sblab/chen03/encode/bigwig/SIRT6_K562.ENCFF297NTZ.hg19.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.hg19.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 SIRT6_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.hg19.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 SIRT6_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_SIRT6.aroundTSS.K562.hg19.sorted_by_SIRT6rep1.pdf"
+
+
+
+
+
+############################################################################################################################
+#####    Plot K562 G4 & NELFE signal (transcription pausing) distribution around TSS （hg38）
+############################################################################################################################
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 32 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+/scratcha/sblab/chen03/encode/bigwig/NELFE_K562.ENCFF213UUG.hg38.bw \
+-R \
+/scratcha/sblab/martin03/reference_data/genomes/gencode/Gencode_human/release_28/gtf/gencode.v28.annotation.gtf \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_NELFE.aroundTSS.K562.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 NELFE_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_NELFE.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_NELFE.aroundTSS.K562.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 NELFE_rep1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_NELFE.aroundTSS.K562.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_NELFE.aroundTSS.K562.sorted_by_SIRT6rep1.pdf"
