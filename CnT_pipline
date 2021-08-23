@@ -1,0 +1,33 @@
+Demultiplex your fq.gz files
+
+
+mkdir fq
+
+
+sbatch -o %j.tmp.out -e %j.tmp.err -t 1-0 --mem 64000 --wrap " \
+/Users/hui01/sw/demultiplexer.rhel/demuxFQ \
+-c -d -i -e -l 9 -R -t 1 \
+-o /scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/fq \
+-b /scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/SLX-17567.lostreads.r_1.fq.gz \
+-s /scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/SLX-17567.demultiplexsummary_r1.txt \
+/scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/SLX_17567_demuxFQ_r1.txt \
+/scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/SLX-17567.UnspecifiedIndex.HLJYVBGXJ.s_1.r_1.fq.gz"
+
+
+sbatch -o %j.tmp.out -e %j.tmp.err -t 1-0 --mem 64000 --wrap " \
+/Users/hui01/sw/demultiplexer.rhel/demuxFQ \
+-c -d -i -e -l 9 -R -t 1 \
+-o /scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/fq \
+-b /scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/SLX-17567.lostreads.r_2.fq.gz \
+-s /scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/SLX-17567.demultiplexsummary_r2.txt \
+/scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/SLX_17567_demuxFQ_r2.txt \
+/scratcha/sblab/chen03/20210820_CnT_withZutao/SLX-17567/SLX-17567.UnspecifiedIndex.HLJYVBGXJ.s_1.r_2.fq.gz"
+
+
+
+
+
+
+
+
+
