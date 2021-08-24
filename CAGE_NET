@@ -1,0 +1,17 @@
+#download fasta using sratools
+
+cd /scratcha/sblab/chen03/CAGE_NET/fasta
+
+### SRR7641290	GSM3318241: NET-CAGE_K562_0.5M_biologicalRep1; Homo sapiens; OTHER
+### SRR7641291	GSM3318242: NET-CAGE_K562_1M_biologicalRep1; Homo sapiens; OTHER
+### SRR7641292	GSM3318243: NET-CAGE_K562_2M_biologicalRep1; Homo sapiens; OTHER
+### SRR7641293  GSM3318244: NET-CAGE_K562_0.5M_biologicalRep2; Homo sapiens; OTHER
+### SRR7641294  GSM3318245: NET-CAGE_K562_1M_biologicalRep2; Homo sapiens; OTHER
+### SRR7641295  GSM3318246: NET-CAGE_K562_2M_biologicalRep2; Homo sapiens; OTHER
+SRR7641290 SRR7641291 SRR7641292 SRR7641293 
+for i in SRR7641294 SRR7641295
+do
+  sbatch -J $i -o $i.out -e $i.err --mem 64000 --wrap "/home/martin03/sw/sratoolkit/sratoolkit.2.8.0-centos_linux64/bin/fastq-dump \
+  --outdir /scratcha/sblab/chen03/CAGE_NET/fasta --gzip --split-files -F $i"
+done
+
