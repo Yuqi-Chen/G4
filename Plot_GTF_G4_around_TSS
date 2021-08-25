@@ -770,3 +770,113 @@ plotHeatmap \
 --samplesLabel G4_rep1 NELFE_rep1 \
 --matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_NELFE.aroundTSS.K562.mat.gz \
 --outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_NELFE.aroundTSS.K562.sorted_by_SIRT6rep1.pdf"
+
+
+
+
+
+
+############################################################################################################################
+####    bigwigCompare to scale PRO_Seq bigwig files 
+############################################################################################################################
+
+####cd /scratcha/sblab/chen03/computeMatrix
+
+####sbatch -o bigwigCompare.out -e bigwigCompare.err --mem 64000 \
+####--wrap "bigwigCompare --binSize 10 \
+####--outFileName /scratcha/sblab/chen03/K562_PRO_seq/bw/GSM1480327_K562_PROseq_plus.scalefactor8.bw \
+####--outFileFormat bigwig \
+####--bigwig1 /scratcha/sblab/chen03/K562_PRO_seq/bw/GSM1480327_K562_PROseq_plus.bw \
+####--bigwig2 /scratcha/sblab/chen03/K562_PRO_seq/bw/GSM1480327_K562_PROseq_plus.bw \
+####--scaleFactors 8:1 \
+####--skipNonCoveredRegions"
+
+
+############################################################################################################################
+#####    Plot K562 G4 & PRO_seq signal (transcription initiation) distribution around TSS （hg19）
+############################################################################################################################
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 32 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_c*.rmdup.clean.bs10.bl.RPKM.bw \
+/scratcha/sblab/chen03/K562_PRO_seq/bw/GSM1480327_K562_PROseq_plus.bw \
+/scratcha/sblab/chen03/K562_PRO_seq/bw/GSM1480327_K562_PROseq_minus.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PROseq.aroundTSS.K562.hg19.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 PRO_plus PRO_minus \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PROseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PROseq.aroundTSS.K562.hg19.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 PRO_plus PRO_minus \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PROseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PROseq.aroundTSS.K562.hg19.sorted_by_PROplus.pdf &&
+plotHeatmap \
+--sortUsingSamples 3 \
+--samplesLabel G4_rep1 PRO_plus PRO_minus \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PROseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_PROseq.aroundTSS.K562.hg19.sorted_by_PROminus.pdf"
+
+
+
+
+
+
+############################################################################################################################
+#####    Plot K562 G4 & GRO_seq/cap signal (transcription initiation) distribution around TSS （hg19）
+############################################################################################################################
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 32 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_a*.rmdup.clean.bs10.bl.RPKM.bw \
+/scratcha/sblab/chen03/K562_GRO_seq_GRO_cap/bw/GSM1480325_K562_GROseq_plus.bigWig \
+/scratcha/sblab/chen03/K562_GRO_seq_GRO_cap/bw/GSM1480325_K562_GROseq_minus.bigWig \
+/scratcha/sblab/chen03/K562_GRO_seq_GRO_cap/bw/GSM1480321_K562_GROcap_wTAP_plus.bigWig \
+/scratcha/sblab/chen03/K562_GRO_seq_GRO_cap/bw/GSM1480321_K562_GROcap_wTAP_minus.bigWig \
+/scratcha/sblab/chen03/K562_GRO_seq_GRO_cap/bw/GSM1480322_K562_GROcap_noTAP_plus.bigWig \
+/scratcha/sblab/chen03/K562_GRO_seq_GRO_cap/bw/GSM1480322_K562_GROcap_noTAP_minus.bigWig \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 GROseq_plus GROseq_minus GROcap_plus GROcap_minus GROcap_plus_ctrl GROcap_minus_ctrl \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 GROseq_plus GROseq_minus GROcap_plus GROcap_minus GROcap_plus_ctrl GROcap_minus_ctrl \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.sorted_by_GROseq_plus.pdf &&
+plotHeatmap \
+--sortUsingSamples 3 \
+--samplesLabel G4_rep1 GROseq_plus GROseq_minus GROcap_plus GROcap_minus GROcap_plus_ctrl GROcap_minus_ctrl \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.sorted_by_GROseq_minus.pdf &&
+plotHeatmap \
+--sortUsingSamples 4 \
+--samplesLabel G4_rep1 GROseq_plus GROseq_minus GROcap_plus GROcap_minus GROcap_plus_ctrl GROcap_minus_ctrl \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.sorted_by_GROcap_plus.pdf &&
+plotHeatmap \
+--sortUsingSamples 5 \
+--samplesLabel G4_rep1 GROseq_plus GROseq_minus GROcap_plus GROcap_minus GROcap_plus_ctrl GROcap_minus_ctrl \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.sorted_by_GROcap_minus.pdf"
