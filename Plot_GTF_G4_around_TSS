@@ -880,3 +880,7 @@ plotHeatmap \
 --samplesLabel G4_rep1 GROseq_plus GROseq_minus GROcap_plus GROcap_minus GROcap_plus_ctrl GROcap_minus_ctrl \
 --matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.mat.gz \
 --outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_GROseq.aroundTSS.K562.hg19.sorted_by_GROcap_minus.pdf"
+
+
+
+
