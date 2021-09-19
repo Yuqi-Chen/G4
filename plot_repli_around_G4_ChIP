@@ -1,0 +1,38 @@
+############################################################################################################################
+#####    Plot K562 repli_G1 signal distribution around G4_ChIP （hg19）
+############################################################################################################################
+
+
+/scratchb/sblab/spiege01/ENCODE_K562/BG4_features/Intervene/20180108_K562_async_rep1-3.mult.5of8.bed
+
+
+############################################################################################################################
+#####    Plot K562 G4 & repli_G1 signal distribution around TSS （hg19） --- plotHeatmap
+############################################################################################################################
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 32 \
+--missingDataAsZero \
+--skipZeros \
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/ENCODE_data/BigWig_10nt/SLX-12320.K562_P9_Async_c*.rmdup.clean.bs10.bl.RPKM.bw \
+/scratcha/sblab/chen03/K562_repli_seq/bw/K562_G1_ENCFF001GRX.bigWig \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/hg19/ENCODE_transcripts.bed \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_repliG1.aroundTSS.K562.hg19.mat.gz &&
+plotHeatmap \
+--sortUsingSamples 1 \
+--samplesLabel G4_rep1 repli_G1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_repliG1.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_repliG1.aroundTSS.K562.hg19.sorted_by_G4rep1.pdf &&
+plotHeatmap \
+--sortUsingSamples 2 \
+--samplesLabel G4_rep1 repli_G1 \
+--matrixFile ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_repliG1.aroundTSS.K562.hg19.mat.gz \
+--outFileName ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_repliG1.aroundTSS.K562.hg19.sorted_by_repliG1.pdf"
+
+
