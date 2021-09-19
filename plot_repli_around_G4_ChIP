@@ -1,13 +1,35 @@
 ############################################################################################################################
-#####    Plot K562 repli_G1 signal distribution around G4_ChIP （hg19）
+#####    Plot K562 repli_G1 signal distribution around G4_ChIP （hg19） ---plotProfile
 ############################################################################################################################
 
+cd /scratcha/sblab/chen03/K562_repli_seq/bw
 
-/scratchb/sblab/spiege01/ENCODE_K562/BG4_features/Intervene/20180108_K562_async_rep1-3.mult.5of8.bed
+mkdir computeMatrix_plotProfile
 
+for f in *bigWig; do \
+sbatch -o ./computeMatrix_plotProfile/${f%%bigWig}computeMatrix.out -e ./computeMatrix_plotProfile/${f%%bigWig}computeMatrix.err --mem 64000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-S \
+$f \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/BG4_features/Intervene/20180108_K562_async_rep1-3.mult.5of8.bed \
+--skipZeros \
+-o ./computeMatrix_plotProfile/${f%%bigWig}repliG1_around_G4.mat.gz && 
+plotProfile -m ./computeMatrix_plotProfile/${f%%bigWig}repliG1_around_G4.mat.gz \
+-out ./computeMatrix_plotProfile/${f%%bigWig}repliG1_around_G4.pdf \
+--refPointLabel G4_ChIP \
+--regionsLabel repli_G1 \
+--dpi 300 \
+--plotHeight 10 \
+--plotWidth 20 \
+--perGroup \
+--numPlotsPerRow 1"; \
+done
 
 ############################################################################################################################
-#####    Plot K562 G4 & repli_G1 signal distribution around TSS （hg19） --- plotHeatmap
+#####    Plot K562 G4 & repli_G1 signal distribution around TSS （hg19） ---plotHeatmap
 ############################################################################################################################
 cd /scratcha/sblab/chen03/computeMatrix
 
