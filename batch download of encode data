@@ -1,14 +1,24 @@
-https://www.encodeproject.org/help/batch-download/
+###############################
+# https://www.encodeproject.org/help/batch-download/
+#
+#
+#Overview
+#Batch download of files is available from a search result. When a set of experiments have been selected, click on the "Download" button to download a files.txt file that contains a list of URLs. The first URL in files.txt is to metadata.tsv, a file described below that contains all the experimental metadata for the files resulting from the search. The remaining URLs in files.txt are links that will download each ENCFF accessioned file.
+#
+#Files
+#The "files.txt" file can be copied to any server. The following command can be used to download all the files in the list:
+#
+#xargs -n 1 curl -O -L < files.txt
+#Please be prepared to receive several gigabytes of data if your search includes many files.
+###############################
 
 
-Overview
-Batch download of files is available from a search result. When a set of experiments have been selected, click on the "Download" button to download a files.txt file that contains a list of URLs. The first URL in files.txt is to metadata.tsv, a file described below that contains all the experimental metadata for the files resulting from the search. The remaining URLs in files.txt are links that will download each ENCFF accessioned file.
 
-Files
-The "files.txt" file can be copied to any server. The following command can be used to download all the files in the list:
 
-xargs -n 1 curl -O -L < files.txt
-Please be prepared to receive several gigabytes of data if your search includes many files.
+
+
+
+
 
 
 
