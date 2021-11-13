@@ -12,12 +12,66 @@
 #Please be prepared to receive several gigabytes of data if your search includes many files.
 ###############################
 
-sbatch -J encode_batch_download_20211113 -o encode_batch_download_20211113.out -e encode_batch_download_20211113.err --mem 64000 \
---wrap "xargs -n 1 curl -O -L < files_1to25.txt"
+# download files_1to25 bigwigs
+cd /scratcha/sblab/chen03/encode/bigwig/20211113_k562_TF_ChIP_batch_downloading
+
+xargs -n 1 curl -O -L < files_1to25.txt
+
+# download files_1to25 beds
+cd /scratcha/sblab/chen03/encode/bed/20211113_k562_TF_ChIP_batch_downloading
+
+### 
+cd /scratcha/sblab/chen03/computeMatrix
+
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 8000 \
+--wrap "computeMatrix reference-point \
+--referencePoint TSS \
+-b 1000 -a 1000 \
+-p 8 \
+--skipZeros \
+-S \
+/scratcha/sblab/chen03/K562_G4_ChIP/bw/DMSO_control_4hr_biorep1_ChIP3_SLX-19267.i707_i504.r_1.hg38.sort.w10.rpm.bw \
+-R \
+/scratcha/sblab/chen03/encode/bed/20211113_k562_TF_ChIP_batch_downloading/ENCFF023IFO.bed.gz \
+-o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/G4_around_ENCFF023IFO.K562.mat.gz &&
+plotProfile \
+-m G4_around_ENCFF023IFO.K562.mat.gz \
+-out BG4_in_ENCFF023IFO.mat.pdf \
+--refPointLabel PeakCenter \
+--dpi 500 \
+--plotHeight 10 \
+--plotWidth 15 \
+--perGroup \
+--samplesLabel ENCFF023IFO \
+--plotTitle BG4_in_ENCFF023IFO  \
+--numPlotsPerRow 1"
 
 
+### SP1???
+sbatch -o Plotprofile.%j.log -J DT_Profile --mem=10000 \
+--wrap "computeMatrix reference-point \
+--referencePoint center \
+-b 2000 -a 2000 \
+-S \
+/scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/ENCFF515QZM.bs50.bl.RPKM.bw \
+/scratchb/sblab/spiege01/ENCODE_K562/Signal_based_Analysis/bigWig/ENCFF593LCA.bs50.bl.RPKM.bw \
+-R \
+/scratchb/sblab/spiege01/ENCODE_K562/reference_data/Quadruplex/20180108_K562_async_rep1-3.mult.5of8.bed \
+--skipZeros \
+-o SP1_in_BG4.mat.gz"
 
 
+sbatch -o Logs/Plotprofile.%j.log -J DT_Profile --mem=10000 \
+--wrap "plotProfile -m SP1_in_BG4.mat.gz \
+-out SP1_in_BG4.mat.pdf \
+--refPointLabel PeakCenter \
+--dpi 500 \
+--plotHeight 10 \
+--plotWidth 15 \
+--perGroup \
+--samplesLabel SP1.rep1 SP1.rep2 \
+--plotTitle SP1_in_BG4_consensus_peaks  \
+--numPlotsPerRow 1"
 
 
 
