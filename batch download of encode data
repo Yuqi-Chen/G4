@@ -12,6 +12,9 @@
 #Please be prepared to receive several gigabytes of data if your search includes many files.
 ###############################
 
+sbatch -J encode_batch_download_20211113 -o encode_batch_download_20211113.out -e encode_batch_download_20211113.err --mem 64000 \
+--wrap "xargs -n 1 curl -O -L < files_1to25.txt"
+
 
 
 
