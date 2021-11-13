@@ -23,7 +23,7 @@ cd /scratcha/sblab/chen03/encode/bed/20211113_k562_TF_ChIP_batch_downloading
 ### 
 cd /scratcha/sblab/chen03/computeMatrix
 
-sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 8000 \
+sbatch -o ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.out -e ./computeMatrix_GTFandG4aroundTSSinK562_hg19/computeMatrix.err --mem 8000 -t 1-0 \
 --wrap "computeMatrix reference-point \
 --referencePoint TSS \
 -b 1000 -a 1000 \
