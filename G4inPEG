@@ -10,7 +10,20 @@ cd /scratcha/sblab/chen03/G4ChIPseq/G4inPEG/SLX-21315/
 mkdir fastqc
 for file in *.fq.gz
 do
-  sbatch --time 06:00:00 -o %j.out -e %j.err --mem 4G --wrap "fastqc --noextract --nogroup -q -o fastqc/ $file"
+  sbatch --time 08:00:00 -o %j.out -e %j.err --mem 4G --wrap "fastqc --noextract --nogroup -q -o fastqc/ $file"
 done
+
+
+## === cut illumina adapters ===
+
+out_dir=/trim
+cd $out_dir
+for f in ../*.fq.gz 
+do
+  sbatch --time 08:00:00 --mem 8G --wrap "cutadapt -m 10 -q 20 -O 3 -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -o ${f%%.fastq.gz}.trimmed.fastq.gz $f"
+done
+
+
+
 
 
