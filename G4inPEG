@@ -1,0 +1,16 @@
+### Download data from clarity LIMS
+
+java -jar /Users/chen03/sw/clarity-tools.jar -l SLX-21315
+
+
+###G4-ChIP data processing
+
+# === fastqc quality check QC ===
+cd /scratcha/sblab/chen03/G4ChIPseq/G4inPEG/SLX-21315/
+mkdir fastqc
+for file in *.fq.gz
+do
+  sbatch --time 06:00:00 -o %j.out -e %j.err --mem 4G --wrap "fastqc --noextract --nogroup -q -o fastqc/ $file"
+done
+
+
