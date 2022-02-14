@@ -5,7 +5,7 @@ java -jar /Users/chen03/sw/clarity-tools.jar -l SLX-21315
 
 ###G4-ChIP data processing
 
-# === fastqc quality check QC ===
+## === fastqc quality check QC ===
 cd /scratcha/sblab/chen03/G4ChIPseq/G4inPEG/SLX-21315/
 mkdir fastqc
 for file in *.fq.gz
@@ -16,13 +16,90 @@ done
 
 ## === cut illumina adapters ===
 
-out_dir=/trim
+out_dir=./trim
 cd $out_dir
 for f in ../*.fq.gz 
 do
-  sbatch --time 08:00:00 --mem 8G --wrap "cutadapt -m 10 -q 20 -O 3 -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -o ${f%%.fastq.gz}.trimmed.fastq.gz $f"
+  sbatch --time 08:00:00 --mem 8G --wrap "cutadapt -m 10 -q 20 -O 3 -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -o ./${f%%.fq.gz}.trimmed.fastq.gz $f"
 done
 
+
+
+## === alignment ===
+cd /trim
+ls
+g='/scratcha/sblab/simeon01/reference_genomes/hg38/hg38_selected.fa'
+w='/scratcha/sblab/simeon01/reference_genomes/hg38/hg38.whitelist.sorted.bed'
+mkdir aligned
+for f in *trimmed.fastq.gz
+do
+    sbatch --time 08:00:00 --mem 16000 --wrap "bwa mem -M $g $f | samtools view -S -u -F2304 -q 10 -L $w - | samtools sort -@ 8 - > ./aligned/${f%%.trimmed.fastq.gz}.hg38.sort.bam"
+done
+
+
+
+## === remove duplicates ===
+cd /trim/aligned
+for file in *.hg38.sort.bam
+do
+  sbatch --time 08:00:00 --mem 16G --wrap "java -Xmx7g -jar /home/bioinformatics/software/picard/picard-2.14.0/picard.jar MarkDuplicates INPUT=$file OUTPUT=${file%%.bam}.markduplicates.bam REMOVE_DUPLICATES=true  AS=true METRICS_FILE=${file%%.bam}.markduplicates_metrics.txt"
+  
+  echo "==========="
+  echo "          "
+done
+
+
+
+## === merge the aligned bam (prior dup-removal) ===
+
+## Libraries from PEG30% group had low sequencing depth therefore the 3 techlical replicated are merged (after alignment and before remove duplicates)
+
+
+bam_seq1=/scratcha/sblab/chen03/G4ChIPseq/G4inPEG/SLX-21315/trim/aligned/SLX-21315.P69F9.HY2CKBGXK.s_1.r_1.hg38.sort.bam
+bam_seq2=/scratcha/sblab/chen03/G4ChIPseq/G4inPEG/SLX-21315/trim/aligned/SLX-21315.P70F10.HY2CKBGXK.s_1.r_1.hg38.sort.bam
+bam_seq3=/scratcha/sblab/chen03/G4ChIPseq/G4inPEG/SLX-21315/trim/aligned/SLX-21315.P71F11.HY2CKBGXK.s_1.r_1.hg38.sort.bam
+
+cd /scratcha/sblab/chen03/G4ChIPseq/G4inPEG/SLX-21315/trim/aligned
+sbatch --time 08:00:00 --mem 16G --wrap "samtools merge SLX-21315.P70F9to11.HY2CKBGXK.s_1.r_1.hg38.sort.bam $bam_seq1 $bam_seq2 $bam_seq3 && samtools index SLX-21315.P70F9to11.HY2CKBGXK.s_1.r_1.hg38.sort.bam"
+
+
+
+
+## === generate stats ===
+for file in *.hg38.sort.bam
+  do
+  
+  bam_hg38=$file
+  #bam_f_nodup=${bam%%.hg38.sort.bam}.hg38.sort.markduplicates.bam
+  bam_hg38_nodup=${file%%.bam}.markduplicates.bam
+  
+  ls -lth $bam_hg38
+  echo "====="
+  ls -lth $bam_hg38_nodup
+  
+  sbatch --time 08:00:00 -o %j.out.stat --mem 8G --wrap "samtools view -c -F 260 $bam_hg38 >  ${file%%.bam}.stat2"
+  sbatch --time 08:00:00 -o %j.out.stat --mem 8G --wrap "samtools view -c -F 260 $bam_hg38_nodup >  ${file%%.bam}.stat5"
+done
+
+
+
+# ===Generating index=== 
+cd /scratcha/sblab/chen03/G4ChIPseq/G4inPEG/SLX-21315/trim/aligned
+for bam in *.markduplicates.bam
+    do
+  sbatch --time 08:00:00 -o %j.out.log --mem 16G --wrap "samtools index $bam"
+done
+
+# === generate tracks === 
+for bam in *.markduplicates.bam
+    do
+        tot_r_hg38=`cat ${bam%%.markduplicates.bam}.stat5`
+        scal_factor_hg38=$(awk -v m=$tot_r_hg38 'BEGIN { print 1000000/m }')
+        echo $scal_factor_hg38
+      echo sbatch --time 08:00:00 --mem 16G --wrap "bamCoverage --scaleFactor $scal_factor_hg38 -bs 10 -b $bam -of \"bigwig\" -o ${bam%%.markduplicates.bam}.w10.rpm.bw"
+        sbatch --time 08:00:00 --mem 16G --wrap "bamCoverage --scaleFactor $scal_factor_hg38 -bs 10 -b $bam -of \"bigwig\" -o ${bam%%.markduplicates.bam}.w10.rpm.bw"
+        echo "=============="
+done
 
 
 
